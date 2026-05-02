@@ -1,4 +1,3 @@
-const fs = require('fs')
 const path = require('path')
 const constants = require('./constants')
 const cleanPath = require('./clean-path')
@@ -6,29 +5,24 @@ const cleanPath = require('./clean-path')
 /*
  * Replaces relative paths to absolute path for imports
  */
-const changeRelativePathToAbsolute = (filePath) => {
+async function changeRelativePathToAbsolute(filePath, ctx) {
 	const dir = path.dirname(filePath)
-	const fileContent = fs.readFileSync(filePath, constants.UTF8)
-	return new Promise(async (resolve) => {
-		let fileContentNew = fileContent
-		const findAllImportPaths = require('./find-all-import-paths')
-		const importObjs = await findAllImportPaths(dir, fileContent)
-		if (!importObjs || importObjs.length == 0) {
-			resolve(fileContentNew)
-		}
-		importObjs.forEach((importObj) => {
-			const { dependencyPath, fullImportStatement } = importObj
-			const isAbsolutePath = !dependencyPath.startsWith(constants.DOT)
-			if (!isAbsolutePath) {
-				let dependencyPathNew = dir + constants.SLASH + dependencyPath
-				dependencyPathNew = cleanPath(dependencyPathNew)
-				let fullImportStatementNew = fullImportStatement.split(dependencyPath).join(dependencyPathNew)
-				fileContentNew = fileContentNew.split(fullImportStatement).join(fullImportStatementNew)
-			}
-		})
+	const fileContent = await ctx.readFile(filePath)
+	let fileContentNew = fileContent
 
-		resolve(fileContentNew)
-	})
+	const findAllImportPaths = require('./find-all-import-paths')
+	const importObjs = await findAllImportPaths(dir, fileContent, ctx)
+	if (!importObjs || importObjs.length === 0) return fileContentNew
+
+	for (const { dependencyPath, fullImportStatement } of importObjs) {
+		const isAbsolutePath = !dependencyPath.startsWith(constants.DOT)
+		if (isAbsolutePath) continue
+		const dependencyPathNew = cleanPath(dir + constants.SLASH + dependencyPath)
+		const fullImportStatementNew = fullImportStatement.split(dependencyPath).join(dependencyPathNew)
+		fileContentNew = fileContentNew.split(fullImportStatement).join(fullImportStatementNew)
+	}
+
+	return fileContentNew
 }
 
 module.exports = changeRelativePathToAbsolute

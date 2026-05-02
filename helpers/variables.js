@@ -23,17 +23,11 @@ let parentDir = inputFileDir
 let outDir = args.length > 1 ? args[1] : config ? config.outputDir : './out'
 let flatContractPrefix = args.length > 2 ? args[2] : path.basename(inputFilePath, '.sol')
 
-let allSrcFiles = []
-let importedSrcFiles = {}
-
-
 module.exports = {
 	args,
 	inputFilePath,
 	inputFileDir,
 	parentDir,
 	outDir,
-	allSrcFiles,
-	importedSrcFiles,
-	flatContractPrefix
+	flatContractPrefix,
 }

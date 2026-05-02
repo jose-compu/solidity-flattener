@@ -5,8 +5,8 @@
   "scripts": {
     "start": "node index.js",
     "lint": "./node_modules/.bin/eslint .",
-    "test": "mocha",
-    "coveralls": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
+    "test": "LOG_LEVEL=silent mocha",
+    "bench": "node benchmark.js"
   },
   "bin": {
     "poa-solidity-flattener": "index.js"
@@ -20,23 +20,25 @@
   "license": "MIT",
   "homepage": "https://poa.network/",
   "dependencies": {
-    "bunyan": "^1.8.12",
     "decomment": "^0.9.1",
-    "glob-promise": "^3.4.0",
-    "path": "^0.12.7"
+    "fast-glob": "^3.3.3",
+    "path": "^0.12.7",
+    "pino": "^10.3.1"
   },
   "engines": {
-    "node": ">=16 <=18"
+    "node": ">=20"
   },
   "bugs": {
     "url": "https://github.com/poanetwork/solidity-flattener/issues"
   },
   "main": "index.js",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "coveralls": "^3.0.2",
-    "eslint": "^5.5.0",
+    "eslint": "^9.39.4",
     "istanbul": "^0.4.5",
     "mocha": "^10.2.0",
-    "mocha-lcov-reporter": "^1.3.0"
+    "mocha-lcov-reporter": "^1.3.0",
+    "tinybench": "^6.0.1"
   }
 }
