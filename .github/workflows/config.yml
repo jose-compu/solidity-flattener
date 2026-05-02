@@ -1,45 +1,37 @@
-name: Solidity flattener CI
+name: CI
 
 on:
   push:
-    branches:
-      - master
+    branches: ['**']
   pull_request:
-    branches:
-      - master
+    branches: [master, main]
 
 jobs:
   test:
+    name: Test (Node ${{ matrix.node-version }})
     runs-on: ubuntu-latest
-
     strategy:
+      fail-fast: false
       matrix:
-        node-version: [14, 16, 18]
+        node-version: [20, 22, 24]
 
     steps:
-    - uses: actions/checkout@v1
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Install, test
-      run: |
-        npm install
-        npm test
-      env:
-        CI: true
+      - uses: actions/checkout@v4
 
-  checkCodestyle:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18.x'
-    - name: Install and check codestyle
-      run: |
-        npm install
-        npm run lint
-      env:
-        CI: true
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+        env:
+          CI: true
+          LOG_LEVEL: silent
