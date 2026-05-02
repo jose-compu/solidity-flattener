@@ -33,7 +33,7 @@
   },
   "main": "index.js",
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
+    "@eslint/js": "^9.39.0",
     "coveralls": "^3.0.2",
     "eslint": "^9.39.4",
     "istanbul": "^0.4.5",

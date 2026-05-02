@@ -2,3 +2,5 @@
 /coverage
 .DS_Store
 /out/demo-large
+/demo-large
+/out
